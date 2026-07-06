@@ -68,6 +68,58 @@ describe("GET /", () => {
     assert.ok(res.body.includes("Welcome to Srini KCD New York 2026! 🎉"));
     assert.ok(res.body.includes("class=\"banner\""));
   });
+
+  it("includes sidebar HTML structure", async () => {
+    const req = mockReq("GET", "/");
+    const res = mockRes();
+    await app.handle(req, res);
+    assert.strictEqual(res.statusCode, 200);
+    // Verify sidebar div is present
+    assert.ok(res.body.includes("class=\"sidebar\""));
+    // Verify sidebar header with rocket emoji
+    assert.ok(res.body.includes("class=\"sidebar-header\""));
+    assert.ok(res.body.includes("🚀 KCD NYC"));
+    // Verify sidebar navigation
+    assert.ok(res.body.includes("class=\"sidebar-nav\""));
+    assert.ok(res.body.includes("class=\"nav-link\""));
+    // Verify all nav links are present
+    assert.ok(res.body.includes(">Home</a>"));
+    assert.ok(res.body.includes(">Health</a>"));
+    assert.ok(res.body.includes(">Greet</a>"));
+    assert.ok(res.body.includes(">Echo</a>"));
+    // Verify status indicator
+    assert.ok(res.body.includes("class=\"status-indicator\""));
+    assert.ok(res.body.includes("System Online"));
+  });
+
+  it("includes sidebar CSS styling", async () => {
+    const req = mockReq("GET", "/");
+    const res = mockRes();
+    await app.handle(req, res);
+    assert.strictEqual(res.statusCode, 200);
+    // Verify sidebar CSS properties
+    assert.ok(res.body.includes("position: fixed"));
+    assert.ok(res.body.includes("width: 220px"));
+    assert.ok(res.body.includes("background: #1e293b"));
+    assert.ok(res.body.includes("z-index: 2000"));
+    // Verify nav-link hover styling (gold color)
+    assert.ok(res.body.includes("#f59e0b"));
+    // Verify status indicator animation
+    assert.ok(res.body.includes("animation: pulse"));
+  });
+
+  it("includes responsive CSS for sidebar", async () => {
+    const req = mockReq("GET", "/");
+    const res = mockRes();
+    await app.handle(req, res);
+    assert.strictEqual(res.statusCode, 200);
+    // Verify responsive breakpoint hides sidebar on screens < 900px
+    assert.ok(res.body.includes("@media (max-width: 900px)"));
+    assert.ok(res.body.includes(".sidebar {"));
+    assert.ok(res.body.includes("display: none"));
+    // Verify body margin-left added to accommodate sidebar
+    assert.ok(res.body.includes("margin-left: 220px"));
+  });
 });
 
 describe("GET /api/health", () => {
