@@ -24,13 +24,19 @@ function mockRes() {
 }
 
 describe("GET /", () => {
-  it("returns hello message", async () => {
+  it("returns HTML dashboard page", async () => {
     const req = mockReq("GET", "/");
     const res = mockRes();
     await app.handle(req, res);
     assert.strictEqual(res.statusCode, 200);
-    const body = JSON.parse(res.body);
-    assert.strictEqual(body.message, "Hello from KCD New York!");
+    assert.strictEqual(res.headers["Content-Type"], "text/html");
+    assert.ok(res.body.includes("<!DOCTYPE html>"));
+    assert.ok(res.body.includes("KCD NYC Hello App"));
+    assert.ok(res.body.includes("id=\"clock\""));
+    assert.ok(res.body.includes("/api/health"));
+    assert.ok(res.body.includes("/api/greet"));
+    assert.ok(res.body.includes("/api/echo"));
+    assert.ok(res.body.includes("/api/stats"));
   });
 });
 
