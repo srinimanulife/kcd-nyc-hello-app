@@ -46,7 +46,7 @@ const dashboardHTML = `<!DOCTYPE html>
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -110,19 +110,19 @@ const dashboardHTML = `<!DOCTYPE html>
     }
 
     .card.health {
-      border-top: 4px solid #10b981;
+      border-top: 4px solid #d97706;
     }
 
     .card.greet {
-      border-top: 4px solid #3b82f6;
-    }
-
-    .card.echo {
       border-top: 4px solid #f59e0b;
     }
 
+    .card.echo {
+      border-top: 4px solid #ea580c;
+    }
+
     .card.stats {
-      border-top: 4px solid #ec4899;
+      border-top: 4px solid #b45309;
     }
 
     .card h3 {
@@ -150,23 +150,23 @@ const dashboardHTML = `<!DOCTYPE html>
     }
 
     .card.health .card-method {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .card.greet .card-method {
-      background: #dbeafe;
-      color: #1e3a8a;
-    }
-
-    .card.echo .card-method {
       background: #fed7aa;
       color: #92400e;
     }
 
+    .card.greet .card-method {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .card.echo .card-method {
+      background: #fed7aa;
+      color: #7c2d12;
+    }
+
     .card.stats .card-method {
-      background: #fbcfe8;
-      color: #831843;
+      background: #fcd34d;
+      color: #78350f;
     }
 
     .card-path {
