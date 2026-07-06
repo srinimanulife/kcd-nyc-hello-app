@@ -21,6 +21,18 @@ const app = {
     }
 
     try {
+      let body = "";
+      if (req.method === "POST") {
+        body = await new Promise((resolve) => {
+          req.on("data", (chunk) => {
+            body += chunk;
+          });
+          req.on("end", () => {
+            resolve(body);
+          });
+        });
+        req.body = body ? JSON.parse(body) : {};
+      }
       await handler(req, res);
     } catch (err) {
       res.writeHead(500, { "Content-Type": "application/json" });
@@ -285,6 +297,12 @@ app.get("/api/health", (req, res) => {
   const uptime = Math.floor((Date.now() - app.startTime) / 1000);
   res.writeHead(200, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ status: "ok", uptime }));
+});
+
+app.post("/api/echo", (req, res) => {
+  const receivedAt = new Date().toISOString();
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ ...req.body, receivedAt }));
 });
 
 module.exports = app;

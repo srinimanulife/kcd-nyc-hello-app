@@ -3,8 +3,35 @@ const assert = require("node:assert");
 const app = require("../src/app");
 
 // Helper to create mock req/res
-function mockReq(method, url) {
-  return { method, url };
+function mockReq(method, url, bodyData = null) {
+  const listeners = {};
+  const req = {
+    method,
+    url,
+    on(event, callback) {
+      listeners[event] = callback;
+    },
+    emit(event, data) {
+      if (listeners[event]) {
+        listeners[event](data);
+      }
+    },
+  };
+
+  // For POST requests, simulate data stream
+  if (method === "POST" && bodyData !== null) {
+    setImmediate(() => {
+      const jsonData = JSON.stringify(bodyData);
+      req.emit("data", jsonData);
+      req.emit("end");
+    });
+  } else if (method === "POST") {
+    setImmediate(() => {
+      req.emit("end");
+    });
+  }
+
+  return req;
 }
 
 function mockRes() {
@@ -72,6 +99,31 @@ describe("GET /api/health", () => {
     const uptime2 = body2.uptime;
 
     assert.ok(uptime2 >= uptime1);
+  });
+});
+
+describe("POST /api/echo", () => {
+  it("returns echo with data and timestamp", async () => {
+    const req = mockReq("POST", "/api/echo", { message: "hello" });
+    const res = mockRes();
+    await app.handle(req, res);
+    assert.strictEqual(res.statusCode, 200);
+    assert.strictEqual(res.headers["Content-Type"], "application/json");
+    const body = JSON.parse(res.body);
+    assert.strictEqual(body.message, "hello");
+    assert.ok(body.receivedAt);
+    assert.ok(typeof body.receivedAt === "string");
+  });
+
+  it("returns timestamp with empty body", async () => {
+    const req = mockReq("POST", "/api/echo", {});
+    const res = mockRes();
+    await app.handle(req, res);
+    assert.strictEqual(res.statusCode, 200);
+    assert.strictEqual(res.headers["Content-Type"], "application/json");
+    const body = JSON.parse(res.body);
+    assert.ok(body.receivedAt);
+    assert.ok(typeof body.receivedAt === "string");
   });
 });
 
