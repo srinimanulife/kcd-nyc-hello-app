@@ -117,6 +117,39 @@ const dashboardHTML = `<!DOCTYPE html>
       margin-top: 70px;
     }
 
+    .metrics-panel {
+      background: #0f766e;
+      border-radius: 12px;
+      padding: 30px;
+      margin-top: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px;
+    }
+
+    .metric-card {
+      text-align: center;
+      color: white;
+    }
+
+    .metric-label {
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #a7f3d0;
+      margin-bottom: 10px;
+    }
+
+    .metric-value {
+      font-size: 2.5em;
+      font-weight: 700;
+      color: white;
+      font-family: 'Monaco', 'Courier New', monospace;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
     .endpoints {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -233,6 +266,21 @@ const dashboardHTML = `<!DOCTYPE html>
         <div class="clock" id="clock">00:00:00</div>
       </div>
 
+      <div class="metrics-panel">
+        <div class="metric-card">
+          <div class="metric-label">Requests Today</div>
+          <div class="metric-value" id="requests-today">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Uptime</div>
+          <div class="metric-value" id="uptime">00:00:00</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Active Users</div>
+          <div class="metric-value" id="active-users">0</div>
+        </div>
+      </div>
+
     <div class="endpoints">
       <div class="card health">
         <div>
@@ -274,6 +322,8 @@ const dashboardHTML = `<!DOCTYPE html>
   </div>
 
   <script>
+    const pageLoadTime = Date.now();
+
     function updateClock() {
       const now = new Date();
       const hours = String(now.getHours()).padStart(2, '0');
@@ -282,8 +332,24 @@ const dashboardHTML = `<!DOCTYPE html>
       document.getElementById('clock').textContent = \`\${hours}:\${minutes}:\${seconds}\`;
     }
 
+    function updateMetrics() {
+      const requestsToday = Math.floor(Math.random() * 900) + 100;
+      const activeUsers = Math.floor(Math.random() * 50) + 1;
+
+      const elapsed = Math.floor((Date.now() - pageLoadTime) / 1000);
+      const hours = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+      const minutes = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+      const seconds = String(elapsed % 60).padStart(2, '0');
+
+      document.getElementById('requests-today').textContent = requestsToday;
+      document.getElementById('uptime').textContent = \`\${hours}:\${minutes}:\${seconds}\`;
+      document.getElementById('active-users').textContent = activeUsers;
+    }
+
     updateClock();
+    updateMetrics();
     setInterval(updateClock, 1000);
+    setInterval(updateMetrics, 1000);
   </script>
 </body>
 </html>`;
