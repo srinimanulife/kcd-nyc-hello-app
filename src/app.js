@@ -64,6 +64,86 @@ const dashboardHTML = `<!DOCTYPE html>
       justify-content: center;
       align-items: center;
       padding: 20px;
+      margin-left: 220px;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 220px;
+      height: 100vh;
+      background: #1e293b;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      z-index: 2000;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      background: transparent;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 0.95em;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+    }
+
+    .nav-link:hover {
+      background: #f59e0b;
+      color: #1f2937;
+    }
+
+    .sidebar-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85em;
+      color: #94a3b8;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
     }
 
     .container {
@@ -246,6 +326,16 @@ const dashboardHTML = `<!DOCTYPE html>
       margin-top: auto;
     }
 
+    @media (max-width: 900px) {
+      body {
+        margin-left: 0;
+      }
+
+      .sidebar {
+        display: none;
+      }
+    }
+
     @media (max-width: 600px) {
       .header h1 {
         font-size: 2em;
@@ -258,6 +348,19 @@ const dashboardHTML = `<!DOCTYPE html>
   </style>
 </head>
 <body>
+  <div class="sidebar">
+    <div class="sidebar-header">🚀 KCD NYC</div>
+    <div class="sidebar-nav">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/api/health" class="nav-link" target="_blank">Health</a>
+      <a href="/api/greet" class="nav-link" target="_blank">Greet</a>
+      <a href="/api/echo" class="nav-link" target="_blank">Echo</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="status-indicator"></div>
+      <span>System Online</span>
+    </div>
+  </div>
   <div class="banner">Welcome to Srini KCD New York 2026! 🎉</div>
   <div class="wrapper">
     <div class="container">
