@@ -201,6 +201,80 @@ describe("POST /api/greet", () => {
   });
 });
 
+describe("GET /api/stats", () => {
+  it("returns 200 with correct JSON structure", async () => {
+    const req = mockReq("GET", "/api/stats");
+    const res = mockRes();
+    await app.handle(req, res);
+    assert.strictEqual(res.statusCode, 200);
+    assert.strictEqual(res.headers["Content-Type"], "application/json");
+    const body = JSON.parse(res.body);
+    assert.ok(body.hasOwnProperty("totalRequests"));
+    assert.ok(body.hasOwnProperty("routes"));
+  });
+
+  it("validates totalRequests is a number", async () => {
+    const req = mockReq("GET", "/api/stats");
+    const res = mockRes();
+    await app.handle(req, res);
+    const body = JSON.parse(res.body);
+    assert.strictEqual(typeof body.totalRequests, "number");
+    assert.ok(body.totalRequests >= 0);
+  });
+
+  it("validates routes array contains objects with route and requests fields", async () => {
+    const req = mockReq("GET", "/api/stats");
+    const res = mockRes();
+    await app.handle(req, res);
+    const body = JSON.parse(res.body);
+    assert.ok(Array.isArray(body.routes));
+    body.routes.forEach((route) => {
+      assert.ok(route.hasOwnProperty("route"));
+      assert.ok(route.hasOwnProperty("requests"));
+      assert.strictEqual(typeof route.route, "string");
+      assert.strictEqual(typeof route.requests, "number");
+    });
+  });
+
+  it("totalRequests equals sum of all route counts", async () => {
+    // Make some requests to various endpoints to populate counts
+    await app.handle(mockReq("GET", "/api/health"), mockRes());
+    await app.handle(mockReq("POST", "/api/greet", { name: "Test" }), mockRes());
+
+    const req = mockReq("GET", "/api/stats");
+    const res = mockRes();
+    await app.handle(req, res);
+    const body = JSON.parse(res.body);
+
+    const calculatedSum = body.routes.reduce((sum, route) => sum + route.requests, 0);
+    assert.strictEqual(body.totalRequests, calculatedSum);
+  });
+
+  it("tracks request counts correctly after making requests to various endpoints", async () => {
+    // Reset request counts for a clean test
+    app.requestCounts = {};
+
+    // Make specific requests
+    await app.handle(mockReq("GET", "/api/health"), mockRes());
+    await app.handle(mockReq("GET", "/api/health"), mockRes());
+    await app.handle(mockReq("POST", "/api/greet", { name: "Alice" }), mockRes());
+
+    const req = mockReq("GET", "/api/stats");
+    const res = mockRes();
+    await app.handle(req, res);
+    const body = JSON.parse(res.body);
+
+    // Verify specific route counts
+    const healthRoute = body.routes.find((r) => r.route === "GET /api/health");
+    const greetRoute = body.routes.find((r) => r.route === "POST /api/greet");
+
+    assert.ok(healthRoute);
+    assert.strictEqual(healthRoute.requests, 2);
+    assert.ok(greetRoute);
+    assert.strictEqual(greetRoute.requests, 1);
+  });
+});
+
 describe("Unknown route", () => {
   it("returns 404", async () => {
     const req = mockReq("GET", "/nope");

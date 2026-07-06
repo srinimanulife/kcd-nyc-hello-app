@@ -1,6 +1,7 @@
 const app = {
   routes: {},
   startTime: Date.now(),
+  requestCounts: {},
 
   get(path, handler) {
     this.routes[`GET ${path}`] = handler;
@@ -19,6 +20,8 @@ const app = {
       res.end(JSON.stringify({ error: "Not found" }));
       return;
     }
+
+    this.requestCounts[key] = (this.requestCounts[key] || 0) + 1;
 
     try {
       let body = "";
@@ -483,6 +486,16 @@ app.post("/api/greet", (req, res) => {
   }
   res.writeHead(200, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ greeting: `Hello, ${name}!` }));
+});
+
+app.get("/api/stats", (req, res) => {
+  const totalRequests = Object.values(app.requestCounts).reduce((sum, count) => sum + count, 0);
+  const routes = Object.entries(app.requestCounts).map(([key, count]) => ({
+    route: key,
+    requests: count,
+  }));
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ totalRequests, routes }));
 });
 
 module.exports = app;
