@@ -84,6 +84,27 @@ const dashboardHTML = `<!DOCTYPE html>
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
+    .banner {
+      width: 100%;
+      background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #fbbf24 100%);
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: 600;
+      color: #78350f;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      letter-spacing: 0.5px;
+    }
+
+    .wrapper {
+      margin-top: 70px;
+    }
+
     .endpoints {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -192,11 +213,13 @@ const dashboardHTML = `<!DOCTYPE html>
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>🚀 KCD NYC Hello App</h1>
-      <div class="clock" id="clock">00:00:00</div>
-    </div>
+  <div class="banner">Welcome to Srini KCD New York 2026! 🎉</div>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <h1>🚀 KCD NYC Hello App</h1>
+        <div class="clock" id="clock">00:00:00</div>
+      </div>
 
     <div class="endpoints">
       <div class="card health">
@@ -235,6 +258,7 @@ const dashboardHTML = `<!DOCTYPE html>
         <div class="card-path">/api/stats</div>
       </div>
     </div>
+  </div>
   </div>
 
   <script>

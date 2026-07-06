@@ -37,6 +37,9 @@ describe("GET /", () => {
     assert.ok(res.body.includes("/api/greet"));
     assert.ok(res.body.includes("/api/echo"));
     assert.ok(res.body.includes("/api/stats"));
+    // Verify welcome banner is present
+    assert.ok(res.body.includes("Welcome to Srini KCD New York 2026! 🎉"));
+    assert.ok(res.body.includes("class=\"banner\""));
   });
 });
 
