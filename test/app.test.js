@@ -127,6 +127,28 @@ describe("POST /api/echo", () => {
   });
 });
 
+describe("POST /api/greet", () => {
+  it("returns greeting with valid name", async () => {
+    const req = mockReq("POST", "/api/greet", { name: "Alice" });
+    const res = mockRes();
+    await app.handle(req, res);
+    assert.strictEqual(res.statusCode, 200);
+    assert.strictEqual(res.headers["Content-Type"], "application/json");
+    const body = JSON.parse(res.body);
+    assert.strictEqual(body.greeting, "Hello, Alice!");
+  });
+
+  it("returns 400 error when name is missing", async () => {
+    const req = mockReq("POST", "/api/greet", {});
+    const res = mockRes();
+    await app.handle(req, res);
+    assert.strictEqual(res.statusCode, 400);
+    assert.strictEqual(res.headers["Content-Type"], "application/json");
+    const body = JSON.parse(res.body);
+    assert.strictEqual(body.error, "name is required");
+  });
+});
+
 describe("Unknown route", () => {
   it("returns 404", async () => {
     const req = mockReq("GET", "/nope");

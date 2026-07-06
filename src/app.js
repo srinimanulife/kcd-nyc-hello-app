@@ -305,4 +305,15 @@ app.post("/api/echo", (req, res) => {
   res.end(JSON.stringify({ ...req.body, receivedAt }));
 });
 
+app.post("/api/greet", (req, res) => {
+  const name = req.body?.name;
+  if (!name) {
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "name is required" }));
+    return;
+  }
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ greeting: `Hello, ${name}!` }));
+});
+
 module.exports = app;
